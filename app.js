@@ -49,20 +49,38 @@ main()
         console.log(err);
     });
 
-const sessionOptions = {
-    secret: process.env.SESSION_SECRET || "mysupersecretcode",
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        httpOnly: true
-    }
-};
-
 app.get("/", (req, res) => {
     res.redirect("/events");
 });
+
+const MongoStore = require("connect-mongo");
+
+const store = MongoStore.create({
+  mongoUrl: MONGO_URL,
+  touchAfter: 24 * 3600, // reduce session updates (in seconds)
+  crypto: {
+    secret: process.env.SESSION_SECRET || "mysupersecretcode",
+  },
+});
+
+store.on("error", function (e) {
+  console.log("SESSION STORE ERROR", e);
+});
+
+const sessionOptions = {
+  store,
+  secret: process.env.SESSION_SECRET || "mysupersecretcode",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    expires: Date.now() + 7 * 24 * 60 * 60 * 1000, // 1 week
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  },
+};
+
+app.use(session(sessionOptions));
+
 
 app.use(session(sessionOptions));
 app.use(flash());
