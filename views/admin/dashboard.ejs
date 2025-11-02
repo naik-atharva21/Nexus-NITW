@@ -1,0 +1,91 @@
+<% layout("/layouts/boilerplate") -%>
+<body>
+    <div class="container mt-4">
+        <h2>System Admin Dashboard</h2>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <h4>Pending Event Approvals</h4>
+                <% if(pendingEvents.length === 0) { %>
+                    <p class="text-muted">No pending events</p>
+                <% } else { %>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Organizer</th>
+                                    <th>Date</th>
+                                    <th>Venue</th>
+                                    <th>Capacity</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for(let event of pendingEvents) { %>
+                                    <tr>
+                                        <td><a href="/events/<%= event._id %>"><%= event.title %></a></td>
+                                        <td><%= event.createdBy.username %></td>
+                                        <td><%= new Date(event.date).toLocaleDateString() %></td>
+                                        <td><%= event.venue %></td>
+                                        <td><%= event.capacity %></td>
+                                        <td>
+                                            <form method="POST" action="/admin/events/<%= event._id %>/approve" class="d-inline">
+                                                <button class="btn btn-sm btn-success">Approve</button>
+                                            </form>
+                                            <form method="POST" action="/admin/events/<%= event._id %>/reject" class="d-inline">
+                                                <button class="btn btn-sm btn-danger">Reject</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+        
+        <hr class="my-4">
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <h4>User Role Management</h4>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Current Role</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for(let user of allUsers) { %>
+                                <tr>
+                                    <td><%= user.username %></td>
+                                    <td><%= user.email %></td>
+                                    <td><%= user.role %></td>
+                                    <td>
+                                        <form method="POST" action="/admin/users/<%= user._id %>/role" class="d-inline">
+                                            <select name="role" class="form-select form-select-sm d-inline w-auto">
+                                                <option value="Student" <%= user.role === 'Student' ? 'selected' : '' %>>Student</option>
+                                                <option value="ClubAdmin" <%= user.role === 'ClubAdmin' ? 'selected' : '' %>>Club Admin</option>
+                                                <option value="SystemAdmin" <%= user.role === 'SystemAdmin' ? 'selected' : '' %>>System Admin</option>
+                                            </select>
+                                            <button class="btn btn-sm btn-primary">Update Role</button>
+                                        </form>
+                                        <form method="POST" action="/admin/users/<%= user._id %>?_method=DELETE" class="d-inline">
+                                            <button class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

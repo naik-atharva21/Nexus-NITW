@@ -1,0 +1,47 @@
+<% layout("/layouts/boilerplate.ejs") -%>
+
+<div class="row mt-3">
+    <h1 class="col-6 offset-3">Sign Up on Nexus NITW</h1>
+    <div class="col-6 offset-3">
+        <form action="/signup" method="POST" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input
+                    required
+                    class="form-control"
+                    name="username"
+                    type="text"
+                />
+                <div class="valid-feedback">Looks good!</div>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input
+                    required
+                    class="form-control"
+                    name="email"
+                    type="email"
+                />
+                <div class="invalid-feedback">Please enter a valid email!</div>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input
+                    required
+                    class="form-control"
+                    name="password"
+                    type="password"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="role" class="form-label">Role</label>
+                <select class="form-select" name="role" id="role" required>
+                    <option value="Student">Student</option>
+                    <option value="ClubAdmin">Club Admin</option>
+                </select>
+                <div class="form-text">Select your role in the system</div>
+            </div>
+            <button class="btn btn-success">Sign Up</button>
+        </form>
+    </div>
+</div>

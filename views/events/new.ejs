@@ -1,0 +1,38 @@
+<% layout("/layouts/boilerplate") -%>
+<div class="row mt-3">
+    <h3 class="offset-3">Propose New Event</h3>
+    <div class="offset-3 col-6">
+        <form method="POST" action="/events" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input name="event[title]" id="title" type="text" placeholder="Enter event title" class="form-control" required />
+                <div class="valid-feedback">Looks Good!</div>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="event[description]" id="description" class="form-control" required></textarea>
+                <div class="invalid-feedback">Description should not be empty!</div>
+            </div>
+            <div class="mb-3">
+                <label for="date" class="form-label">Event Date</label>
+                <input name="event[date]" id="date" type="datetime-local" class="form-control" required />
+                <div class="invalid-feedback">Please select event date!</div>
+            </div>
+            <div class="mb-3">
+                <label for="venue" class="form-label">Venue</label>
+                <input name="event[venue]" id="venue" type="text" placeholder="Enter venue" class="form-control" required />
+                <div class="invalid-feedback">Please enter venue!</div>
+            </div>
+            <div class="mb-3">
+                <label for="capacity" class="form-label">Capacity</label>
+                <input name="event[capacity]" id="capacity" type="number" placeholder="Maximum participants" class="form-control" min="1" required />
+                <div class="invalid-feedback">Capacity must be at least 1!</div>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Upload Event Image</label>
+                <input class="form-control" name="event[image]" id="image" type="file" />
+            </div>
+            <button class="btn btn-dark add-btn mb-3">Propose Event</button>
+        </form>
+    </div>
+</div>

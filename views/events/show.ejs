@@ -1,0 +1,141 @@
+<% layout("/layouts/boilerplate") -%>
+<div class="row mt-3 offset-2">
+<body>
+    <div class="col-8 ps-0 mb-3">
+        <h3><%= event.title %></h3>
+    </div>
+    
+    <div class="card col-6 show-card listing-card">
+        <% if (event.image && event.image.url) { %>
+        <img
+            src="<%= event.image.url %>"
+            class="card-img-top show-img"
+            alt="event_img"
+        />
+        <% } %>
+        <div class="card-body">
+            <p class="card-text">
+                Organized by <i><%= event.createdBy.username %></i>
+            </p>
+            <p class="card-text">
+                <%= event.description %>
+            </p>
+            <p class="card-text">
+                <strong>Date:</strong> <%= new Date(event.date).toLocaleDateString() %>
+            </p>
+            <p class="card-text">
+                <strong>Venue:</strong> <%= event.venue %>
+            </p>
+            <p class="card-text">
+                <strong>Capacity:</strong> <%= event.registrations.length %> / <%= event.capacity %>
+            </p>
+            <p class="card-text">
+                <strong>Status:</strong> <span class="badge <%= event.status === 'Approved' ? 'bg-success' : (event.status === 'Pending' ? 'bg-warning' : 'bg-danger') %>"><%= event.status %></span>
+            </p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <% if(currUser && currUser._id.equals(event.createdBy._id)) { %>
+            <div class="col-md-1 me-3 mb-1 ps-0">
+                <a class="btn btn-dark edit-btn" href="/events/<%= event._id %>/edit">Edit</a>
+            </div>
+            <div class="col-md-1 mb-3 px-0">
+                <form method="POST" action="/events/<%= event._id %>?_method=DELETE">
+                    <button class="btn btn-dark">Delete</button>
+                </form>
+            </div>
+        <% } %>
+        
+        <% if(currUser && currUser.role === 'Student' && event.status === 'Approved') { %>
+            <% if(!isRegistered) { %>
+                <div class="col-md-2 mb-3 ps-0">
+                    <form method="POST" action="/events/<%= event._id %>/register">
+                        <button class="btn btn-success">Register</button>
+                    </form>
+                </div>
+            <% } else { %>
+                <div class="col-md-2 mb-3 ps-0">
+                    <form method="POST" action="/events/<%= event._id %>/unregister">
+                        <button class="btn btn-warning">Unregister</button>
+                    </form>
+                </div>
+                <div class="col-md-2 mb-3 ps-0">
+                    <a href="/events/<%= event._id %>/ticket" class="btn btn-primary">View Ticket</a>
+                </div>
+            <% } %>
+        <% } %>
+        
+        <% if(currUser && currUser.role === 'ClubAdmin' && currUser._id.equals(event.createdBy._id)) { %>
+            <div class="col-md-2 mb-3 ps-0">
+                <a href="/events/<%= event._id %>/checkin" class="btn btn-info">Check-In</a>
+            </div>
+        <% } %>
+    </div>
+    
+    <div class="col-8 px-0">
+        <% if(currUser && event.status === 'Approved' && isRegistered) { %>
+        <hr>
+        <h4>Leave Feedback</h4>
+        <form action="/events/<%= event._id %>/feedbacks" method="POST" class="mb-3 needs-validation" novalidate>
+            <div class="my-3">
+            <label for="rating" class="form-label">Rating</label>
+            <fieldset class="starability-grow">
+                <input type="radio" id="first-rate1" name="feedback[rating]" value="1" />
+                <label for="first-rate1" title="Terrible">1 star</label>
+
+                <input type="radio" id="first-rate2" name="feedback[rating]" value="2" />
+                <label for="first-rate2" title="Not good">2 stars</label>
+
+                <input type="radio" id="first-rate3" name="feedback[rating]" value="3" />
+                <label for="first-rate3" title="Average">3 stars</label>
+
+                <input type="radio" id="first-rate4" name="feedback[rating]" value="4" />
+                <label for="first-rate4" title="Very good">4 stars</label>
+
+                <input type="radio" id="first-rate5" name="feedback[rating]" value="5" />
+                <label for="first-rate5" title="Amazing">5 stars</label>
+
+            </fieldset>
+            </div>
+            <div class="my-3">
+                <label for="comments" class="form-label">Comments</label>
+                <textarea
+                    class="form-control"
+                    name="feedback[comments]"
+                    id="comments"
+                    cols="30"
+                    rows="5"
+                    required
+                ></textarea>
+                <div class="invalid-feedback">
+                    Please add some comments for the feedback
+                </div>
+            </div>
+            <button class="btn btn-outline-dark">Submit</button>
+        </form>
+        <% } %>
+            <hr>
+            
+            <p><b>All Feedback</b></p>
+            <div class="row ">
+            <% for(feedback of event.feedbacks) { %>
+                <div class="card col-5 ms-3 mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><%= feedback.author.username %></h5>
+                        <p class="starability-result" data-rating="<%= feedback.rating %>">
+                            Rated: <%= feedback.rating %> stars
+                        </p>
+                        <p class="card-text"><%= feedback.comments %></p>
+                        <% if(currUser && currUser._id.equals(feedback.author._id)) { %>
+                            <form class="mb-3" method="POST" action="/events/<%= event._id %>/feedbacks/<%= feedback._id %>?_method=DELETE">
+                                <button class="btn btn-sm btn-dark">Delete</button>
+                            </form>
+                        <% } %>
+                    </div>
+                </div>
+            <% } %>
+            </div>
+    </div>
+</body>
+</div>

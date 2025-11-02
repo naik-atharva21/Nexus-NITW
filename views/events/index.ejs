@@ -1,0 +1,32 @@
+<% layout("/layouts/boilerplate") -%>
+<body>
+    <div class="d-flex justify-content-between align-items-center mt-3 mb-3">
+        <h3>All Events</h3>
+        <% if(currUser && currUser.role === 'ClubAdmin') { %>
+            <a href="/events/new" class="btn btn-primary">Propose New Event</a>
+        <% } %>
+    </div>
+    
+    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+        <% for(let event of allEvents) { %>
+            <a href="/events/<%= event._id %>" class="listing-link">
+                <div class="card col listing-card">
+                    <% if (event.image && event.image.url) { %>
+                    <img src="<%= event.image.url %>" class="card-img-top" alt="event-img" style="height: 20rem;">
+                    <% } %>
+                    <div class="card-img-overlay"></div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <b><%= event.title %></b><br>
+                            <small class="text-muted"><%= new Date(event.date).toLocaleDateString() %></small><br>
+                            <small class="text-muted">@ <%= event.venue %></small>
+                            <% if(event.status) { %>
+                                <br><span class="badge <%= event.status === 'Approved' ? 'bg-success' : (event.status === 'Pending' ? 'bg-warning' : 'bg-danger') %>"><%= event.status %></span>
+                            <% } %>
+                        </p>
+                    </div>
+                </div>
+            </a>
+        <% } %>
+    </div>
+</body>

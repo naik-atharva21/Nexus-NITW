@@ -1,0 +1,45 @@
+<% layout("/layouts/boilerplate") -%>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card text-center">
+                <div class="card-header bg-success text-white">
+                    <h3>Event Ticket</h3>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title"><%= event.title %></h4>
+                    <p class="card-text"><strong>Date:</strong> <%= new Date(event.date).toLocaleString() %></p>
+                    <p class="card-text"><strong>Venue:</strong> <%= event.venue %></p>
+                    <p class="card-text"><strong>Organized by:</strong> <%= event.createdBy.username %></p>
+                    
+                    <hr>
+                    
+                    <div class="qr-code-container my-4">
+                        <p><strong>Show this QR code at the event entrance:</strong></p>
+                        <img src="<%= qrCode %>" alt="QR Ticket" class="img-fluid" style="max-width: 300px;">
+                    </div>
+                    
+                    <div class="alert alert-info mt-3">
+                        <p class="mb-0"><strong>Ticket Token:</strong> <code><%= registration.ticketToken %></code></p>
+                        <% if (registration.attended) { %>
+                            <p class="mb-0 mt-2 text-success"><strong>✓ Checked In:</strong> <%= new Date(registration.checkedInAt).toLocaleString() %></p>
+                        <% } else { %>
+                            <p class="mb-0 mt-2 text-muted">Not yet checked in</p>
+                        <% } %>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="/events/<%= event._id %>" class="btn btn-primary">Back to Event</a>
+                        <button class="btn btn-secondary" onclick="window.print()">Print Ticket</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+@media print {
+    .navbar, footer, .btn { display: none; }
+}
+</style>
